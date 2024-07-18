@@ -10,6 +10,8 @@ pipeline {
     environment{
         def appVersion = '' //variable declaration
         nexusUrl = 'nexus.chandureddy.online:8081'
+        region = 'us-east-1'
+        account_id = '339713021737'
     }
     stages{
         stage('read the version'){
@@ -19,6 +21,29 @@ pipeline {
                     appVersion = packageJson.version
                     echo "application version: $appVersion"
                 }
+            }
+        }
+        stage('Docker build'){
+            steps{
+                sh """
+                    aws ecr get-login-password --region ${region} | docker login --username
+                    AWS --password-stdin ${account_id}.dkr.ecr.${region}.amazonaws.com
+
+                    docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/expense-frontend:${appVersion} .
+
+                    docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/expense-frontend:${appVersion}
+                """
+            }
+        }
+        stage('Deploy'){
+            steps{
+                sh """
+                    aws eks update-kubeconfig --region us-east-1 --name expense-dev
+                    cd helm
+                    sed -i 's/IMAGE_VERSION/${appVersion}' values.yaml
+                    helm intall frontend .
+
+                """
             }
         }
         stage('Build'){
