@@ -46,46 +46,46 @@ pipeline {
                 """
             }
         }
-        stage('Build'){
-            steps{
-            sh """
-            zip -q -r frontend-${appVersion}.zip * -x Jenkinsfile -x frontend-${appVersion}.zip
-            ls -ltr
-                """
-            }
-        }
-        stage('Nexus artifact upload'){
-            steps{
-            script{
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: "${nexusUrl}",
-                        groupId: 'com.expense',
-                        version: "${appVersion}",
-                        repository: "frontend",
-                        credentialsId: 'nexus-auth',
-                        artifacts: [
-                            [artifactId: "frontend" ,
-                            classifier: '',
-                            file: "frontend-" + "${appVersion}" + '.zip',
-                            type: 'zip']
-                        ]
-                    )
-            }
-            }
-        }
-        stage('Deploy'){
-            steps{
-                script{
-                    def params = [
-                        string(name: 'appVersion', value: "${appVersion}")
-                    ]
-                    build job: 'frontend-deploy', parameters: params, wait: false
-                }
-            }
-        }
-    }
+        // stage('Build'){
+        //     steps{
+        //     sh """
+        //     zip -q -r frontend-${appVersion}.zip * -x Jenkinsfile -x frontend-${appVersion}.zip
+        //     ls -ltr
+        //         """
+        //     }
+        // }
+        // stage('Nexus artifact upload'){
+        //     steps{
+        //     script{
+        //             nexusArtifactUploader(
+        //                 nexusVersion: 'nexus3',
+        //                 protocol: 'http',
+        //                 nexusUrl: "${nexusUrl}",
+        //                 groupId: 'com.expense',
+        //                 version: "${appVersion}",
+        //                 repository: "frontend",
+        //                 credentialsId: 'nexus-auth',
+        //                 artifacts: [
+        //                     [artifactId: "frontend" ,
+        //                     classifier: '',
+        //                     file: "frontend-" + "${appVersion}" + '.zip',
+        //                     type: 'zip']
+        //                 ]
+        //             )
+        //     }
+        //     }
+        // }
+    //     stage('Deploy'){
+    //         steps{
+    //             script{
+    //                 def params = [
+    //                     string(name: 'appVersion', value: "${appVersion}")
+    //                 ]
+    //                 build job: 'frontend-deploy', parameters: params, wait: false
+    //             }
+    //         }
+    //     }
+    // }
         post { 
         always { 
             echo 'I will always say Hello again!'
