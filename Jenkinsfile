@@ -47,7 +47,7 @@ pipeline {
                         if helm ls --all --short | grep -q frontend; then
                             helm upgrade frontend .
                         else
-                            helm upgrade frontend .
+                            helm install frontend .
                         fi
                     """
                 }
