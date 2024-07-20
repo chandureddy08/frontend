@@ -2,13 +2,12 @@ pipeline {
     agent {
         label 'AGENT-1'
     }
-    options{
+    options {
         timeout(time: 10, unit: 'MINUTES')
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
     environment {
-        appVersion = '' // variable declaration
         nexusUrl = 'nexus.chandureddy.online:8081'
         region = 'us-east-1'
         account_id = '339713021737'
