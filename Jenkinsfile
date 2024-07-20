@@ -43,7 +43,12 @@ pipeline {
                         aws eks update-kubeconfig --region ${region} --name expense-dev
                         cd helm
                         sed -i 's/IMAGE_VERSION/${appVersion}/g' values.yaml
-                        helm upgrade frontend .
+
+                        if helm ls --all --short | grep -q frontend; then
+                            helm upgrade frontend .
+                        else
+                            helm install frontend .
+                        fi
                     """
                 }
             }
